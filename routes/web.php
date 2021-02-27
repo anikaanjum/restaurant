@@ -2,7 +2,10 @@
 
 
 
-Route::get('/', 'FrontendController@front');
+Route::get('/', 'User\HomeController@front');
+//cart
+Route::get('add-cart', 'User\CartController@add_cart');
+Route::get('show-cart', 'User\CartController@show_list');
 
 Route::get('/about', function () {
     return view('user.about');
@@ -85,6 +88,9 @@ Route::get('incomereport','ReportController@incomereport');
 Route::get('investreport','ReportController@investreport');
 
 
+
+Route::get('gen_session', 'User\HomeController@gen_session');//Unique Session Generate
+Route::get('remove_session', 'User\HomeController@remove_session');//Unique Session Remove
 //Unit
 
 });

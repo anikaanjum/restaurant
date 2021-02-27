@@ -12,7 +12,7 @@
 	<link rel="stylesheet" href="{{asset('public/assets/')}}/css/fontawesome.min.css">
 	<link rel="stylesheet" href="{{asset('public/assets/')}}/css/responsive.css">
 	
-
+<title>HalalBees</title>
  
  </head>
 	<body>
@@ -27,10 +27,7 @@
 				<div class="menu">
 					<ul class="text-right">
 						<li><a href="">Home</a></li>
-						<li><a href="">About</a></li>
-						<li><a href="">Services</a></li>
-						<li><a href="">Gallery</a></li>
-						<li><a href="">Contact</a></li>
+						<li><a href="#">List <span id="list_item"></span></a></li>
 					</ul>
 				</div>
 			</div>
@@ -88,7 +85,7 @@
 					<div class="food-box">
 						{{-- <img src="{{asset('public/assets/')}}/images/breakfast-1.jpg"/> --}}
 						<h4>{{$item->name}} <span>Tk. {{$item->price}}</span></h4>
-						<p><button>Add to list</button></p>
+						<p><button type="button" data-id="{{$item->id}}" data-price="{{$item->price}}" class="add_to_list">Add to list</button></p>
 					</div>
                     
 					@endforeach
@@ -244,7 +241,50 @@
 			</div>
 		</footer>
 		
-		
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script type="text/javascript">
+			//############################# COOKIE GENERATE #############################
+			@if (!Session::has('unique_session'))
+			$(function () {
+				$.get( "{{action('User\HomeController@gen_session')}}" );
+			});
+			@endif
+		//#####################################################################################
+
+		$('.add_to_list').click(function(){
+			var id = $(this).data('id');
+			var price = $(this).data('price');
+			add_cart(id,price);	
+        });
+
+		function add_cart(id, price) {
+            $.ajax({
+                url: "{{action('User\CartController@add_cart')}}",
+                type: 'GET',
+                data: {foodID:id, price:price},
+                success:function(result){
+					alert('Item Added to list successfully.');
+                    console.log(result);
+                    show_list();
+                },
+                error: function (jXHR, textStatus, errorThrown) {html("")}
+            });
+        }
+		function show_list(){
+            $.ajax({
+                url : "{{action('User\CartController@show_list')}}",
+                type : 'GET',
+                success : function(data){
+                    if(data > 0){
+                        $('#list_item').html('[ '+data+' ]');
+                    }else{
+                        $('#list_item').html('[ 0 ]');
+                    }
+                }
+            });
+        }
+        show_list();
+		</script>
 	
 	</body>
  
